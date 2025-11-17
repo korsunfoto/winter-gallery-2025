@@ -27,6 +27,15 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/photoswipe.min.css">
     
     <style>
+    /* Подключение вашего шрифта */
+    @font-face {
+        font-family: '129 Kosmos';
+        src: url('fonts/129_Kosmos.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+    }
+
     :root {
         --primary-color: #ffffff;
         --accent-color: #aaaaaa;
@@ -60,7 +69,7 @@
     }
 
     .header .main-title {
-        font-family: 'Berkshire Swash', cursive;
+        font-family: '129 Kosmos', 'Berkshire Swash', cursive;
         font-size: 5.5rem;
         font-weight: 400;
         margin-bottom: 0.5rem;
@@ -270,7 +279,6 @@
         color: white;
         z-index: 1600;
         overflow-y: auto;
-        /* Убираем pointer-events: none для мобильных устройств */
     }
 
     .info-fullscreen-content {
@@ -337,7 +345,6 @@
         touch-action: pan-y;
     }
 
-    /* Убираем pointer-events: none для информационного блока на мобильных */
     .info-fullscreen {
         pointer-events: auto;
     }
@@ -498,7 +505,6 @@
             padding: 10px;
             justify-content: flex-start;
             padding-top: 60px;
-            /* Убираем pointer-events: none для мобильных устройств */
             pointer-events: auto;
         }
         
@@ -521,7 +527,6 @@
             margin-bottom: 0.8rem;
         }
 
-        /* Улучшаем поддержку свайпа на мобильных */
         .pswp__item {
             touch-action: pan-y;
         }
@@ -532,21 +537,19 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Для информационного слайда на мобильных - разрешаем свайп */
         .pswp--info-slide .pswp__item {
             touch-action: pan-y;
         }
         
         .pswp--info-slide .info-fullscreen {
-            pointer-events: auto; /* Включаем события для контейнера */
+            pointer-events: auto;
         }
         
         .pswp--info-slide .info-fullscreen-content {
-            pointer-events: auto; /* Включаем события для контента */
+            pointer-events: auto;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Увеличиваем зоны для свайпа на мобильных */
         .swipe-area {
             width: 40%;
         }
@@ -569,7 +572,6 @@
         100% { transform: rotate(360deg); }
     }
 
-    /* Стили для кликабельных ссылок */
     .gallery-item a {
         display: block;
         width: 100%;
@@ -577,7 +579,6 @@
         position: relative;
     }
 
-    /* Эффект тонкой рамки при наведении */
     .gallery-item::before {
         content: '';
         position: absolute;
@@ -609,11 +610,9 @@
         <div class="gallery" id="my-gallery">
             <div class="loader" id="loader"></div>
             <div class="loading" id="loading-text">Загрузка галереи...</div>
-            <!-- Изображения и информационный блок будут добавлены через JavaScript -->
         </div>
     </main>
 
-    <!-- Контейнер для информационного слайда -->
     <div class="info-fullscreen" id="info-fullscreen">
         <div class="swipe-area swipe-area-left"></div>
         <div class="swipe-area swipe-area-right"></div>
@@ -632,19 +631,16 @@
         <p>Все права защищены</p>
     </footer>
 
-    <!-- Подключаем PhotoSwipe -->
     <script src="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe-lightbox.umd.min.js"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Показываем индикатор загрузки
         const loader = document.getElementById('loader');
         const loadingText = document.getElementById('loading-text');
         const infoFullscreen = document.getElementById('info-fullscreen');
         loader.style.display = 'block';
         
-        // Данные о изображениях из папки images
         const images = [
             {
                 src: 'images/obrazec_1.jpg',
@@ -714,7 +710,7 @@
                 width: 688,
                 height: 1024,
                 title: 'Образец №10',
-                description: 'Буду счастлива'
+                description: 'Будем Счастлива'
             },
             {
                 src: 'images/obrazec_11.jpg',
@@ -830,13 +826,11 @@
             }
         ];
 
-        // Создаем элементы галереи после загрузки данных
         setTimeout(function() {
             const galleryElement = document.getElementById('my-gallery');
             loadingText.style.display = 'none';
             loader.style.display = 'none';
             
-            // Добавляем изображения в галерею
             images.forEach((image, index) => {
                 const item = document.createElement('div');
                 item.className = 'gallery-item';
@@ -852,11 +846,9 @@
                         </div>
                     </a>
                 `;
-                
                 galleryElement.appendChild(item);
             });
             
-            // Добавляем информационный блок как последний элемент галереи
             const infoItem = document.createElement('div');
             infoItem.className = 'gallery-item info-gallery-item';
             infoItem.setAttribute('data-pswp-width', 1200);
@@ -866,17 +858,15 @@
                 <h3>Info</h3>
                 <p></p>
             `;
-            
             galleryElement.appendChild(infoItem);
 
-            // Инициализация PhotoSwipe Lightbox
             const lightbox = new PhotoSwipeLightbox({
                 gallery: '#my-gallery',
                 children: 'a, .info-gallery-item',
                 pswpModule: PhotoSwipe,
                 showHideAnimationType: 'fade',
-                arrowPrev: false, // Отключаем стрелки
-                arrowNext: false, // Отключаем стрелки
+                arrowPrev: false,
+                arrowNext: false,
                 zoom: true,
                 close: true,
                 counter: true,
@@ -884,26 +874,16 @@
                 wheelToZoom: true
             });
             
-            // Обработка клика на информационный блок
             lightbox.on('uiRegister', function() {
                 lightbox.pswp.on('change', function() {
-                    // Всегда скрываем информационный блок при смене слайда
                     infoFullscreen.style.display = 'none';
-                    
-                    // Получаем общее количество слайдов
                     const totalSlides = lightbox.pswp.getNumItems();
                     
-                    // Если текущий слайд - информационный блок (последний слайд)
                     if (lightbox.pswp.currSlide && lightbox.pswp.currSlide.index === totalSlides - 1) {
-                        // Показываем информационный блок
                         infoFullscreen.style.display = 'flex';
-                        // Перемещаем блок в контейнер PhotoSwipe
                         lightbox.pswp.currSlide.holderElement.appendChild(infoFullscreen);
-                        
-                        // Добавляем класс для информационного слайда
                         lightbox.pswp.currSlide.holderElement.classList.add('pswp--info-slide');
                         
-                        // Добавляем обработчики для зон свайпа
                         const leftSwipeArea = document.querySelector('.swipe-area-left');
                         const rightSwipeArea = document.querySelector('.swipe-area-right');
                         
@@ -917,20 +897,15 @@
                             });
                         }
                     } else {
-                        // Убираем класс, если это не информационный слайд
                         if (lightbox.pswp.currSlide && lightbox.pswp.currSlide.holderElement) {
                             lightbox.pswp.currSlide.holderElement.classList.remove('pswp--info-slide');
                         }
                     }
                 });
 
-                // Убедимся, что класс удаляется при закрытии галереи
                 lightbox.pswp.on('close', function() {
                     infoFullscreen.style.display = 'none';
-                    // Возвращаем блок обратно в body
                     document.body.appendChild(infoFullscreen);
-                    
-                    // Убираем класс информационного слайда
                     const slideElements = document.querySelectorAll('.pswp--info-slide');
                     slideElements.forEach(el => {
                         el.classList.remove('pswp--info-slide');
@@ -940,13 +915,12 @@
 
             lightbox.init();
             
-            // Запрещаем контекстное меню на всей странице
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 return false;
             });
             
-        }, 1000); // Имитация загрузки данных
+        }, 1000);
     });
     </script>
 </body>
