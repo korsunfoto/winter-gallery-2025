@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Art Gallery - Зимние истории</title>
+    
+    <!-- Мета-теги для соцсетей -->
+    <meta property="og:title" content="Digital Art Gallery - Зимние истории">
+    <meta property="og:description" content="Галерея цифровых портретов в зимней тематике">
+    <meta property="og:image" content="https://korsunfoto.github.io/winter-gallery-2025/images/obrazec_1.jpg">
+    <meta property="og:url" content="https://korsunfoto.github.io/winter-gallery-2025/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:site_name" content="Digital Art Gallery">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Digital Art Gallery - Зимние истории">
+    <meta name="twitter:description" content="Галерея цифровых портретов в зимней тематике">
+    <meta name="twitter:image" content="https://korsunfoto.github.io/winter-gallery-2025/images/obrazec_1.jpg">
+    
+    <!-- Подключаем шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Yomogi&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Подключаем PhotoSwipe -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/photoswipe.min.css">
+    
+    <style>
+    :root {
+        --primary-color: #ffffff;
+        --accent-color: #aaaaaa;
+        --text-color: #e0e0e0;
+        --dark-bg: #181818;
+        --card-bg: #181818;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        --overlay: rgba(0, 0, 0, 0.7);
+        --accent-orange: #FF9E44;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--dark-bg);
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .header {
+        text-align: center;
+        margin: 2rem 0 3rem;
+        padding: 0 20px;
+    }
+
+    .header .main-title {
+        font-family: 'Berkshire Swash', cursive;
+        font-size: 5.5rem;
+        font-weight: 400;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+        letter-spacing: 2px;
+        line-height: 1;
+    }
+
+    .header .subtitle {
+        font-family: 'Yomogi', cursive;
+        font-size: 1.37rem;
+        font-weight: 400;
+        color: var(--accent-orange);
+        margin-top: 0.5rem;
+        letter-spacing: 2px;
+    }
+
+    .title-divider {
+        width: 70%;
+        height: 2px;
+        background-color: var(--accent-orange);
+        margin: 0.8rem auto;
+        max-width: 380px;
+        border-radius: 1px;
+    }
+
+    .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .gallery-item {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        aspect-ratio: 3/4;
+        background-color: #000;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .gallery-item:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.7s ease;
+        filter: brightness(100%);
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.1);
+    }
+
+    .item-caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 15px;
+        color: white;
+        z-index: 2;
+        pointer-events: none;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+    }
+
+    .item-caption h3 {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    .item-caption p {
+        font-size: 0.8rem;
+        opacity: 0.9;
+        font-weight: 300;
+        line-height: 1.2;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    }
+
+    .loading {
+        text-align: center;
+        padding: 2rem;
+        font-size: 1.2rem;
+        color: var(--text-color);
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    /* Стили для PhotoSwipe - скрываем стрелки на всех устройствах */
+    .pswp__button--arrow--left,
+    .pswp__button--arrow--right {
+        display: none !important;
+    }
+
+    .pswp__button--download {
+        display: none !important;
+    }
+
+    /* Скрываем стандартный заголовок PhotoSwipe */
+    .pswp__caption {
+        display: none !important;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 5rem;
+        padding: 3rem;
+        opacity: 0.5;
+        font-size: 0.9rem;
+        font-weight: 300;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Анимация появления элементов */
+    @keyframes fadeIn {
+        from { 
+            opacity: 0; 
+            transform: translateY(30px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+    }
+
+    .gallery-item {
+        animation: fadeIn 0.7s ease forwards;
+        opacity: 0;
+    }
+
+    .gallery-item:nth-child(1) { animation-delay: 0.1s; }
+    .gallery-item:nth-child(2) { animation-delay: 0.2s; }
+    .gallery-item:nth-child(3) { animation-delay: 0.3s; }
+    .gallery-item:nth-child(4) { animation-delay: 0.4s; }
+    .gallery-item:nth-child(5) { animation-delay: 0.5s; }
+    .gallery-item:nth-child(6) { animation-delay: 0.6s; }
+
+    /* Стили для информационного блока как элемента галереи */
+    .info-gallery-item {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        aspect-ratio: 3/4;
+        background-color: var(--dark-bg);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .info-gallery-item:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .info-gallery-item h3 {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--accent-orange);
+    }
+
+    .info-gallery-item p {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        margin-bottom: 1rem;
+        color: var(--text-color);
+    }
+
+    /* Стили для полноэкранного просмотра информационного блока */
+    .pswp--info-slide .pswp__img {
+        display: none;
+    }
+
+    .info-fullscreen {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        background-color: var(--dark-bg);
+        color: white;
+        z-index: 1600;
+        overflow-y: auto;
+        /* Убираем pointer-events: none для мобильных устройств */
+    }
+
+    .info-fullscreen-content {
+        max-width: 800px;
+        width: 100%;
+        padding: 30px;
+        background: transparent;
+    }
+
+    .info-fullscreen h2 {
+        font-family: 'Inter', sans-serif;
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--accent-orange);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        text-align: center;
+    }
+
+    .info-fullscreen p {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 1.2rem;
+        color: #ffffff;
+        opacity: 0.95;
+        font-weight: 400;
+        text-align: justify;
+        text-align-last: left;
+        hyphens: auto;
+    }
+
+    .info-fullscreen p:last-child {
+        margin-bottom: 0;
+    }
+
+    .pswp--info-slide .info-fullscreen {
+        display: flex;
+    }
+
+    /* Исправление для отображения информационного блока */
+    .pswp--info-slide .pswp__container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pswp--info-slide .pswp__item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pswp--info-slide .pswp__img {
+        opacity: 0;
+    }
+
+    .pswp--info-slide .pswp__bg {
+        opacity: 0.98 !important;
+        background-color: var(--dark-bg) !important;
+    }
+
+    /* Улучшение навигации свайпом */
+    .pswp__scroll-wrap {
+        touch-action: pan-y;
+    }
+
+    /* Убираем pointer-events: none для информационного блока на мобильных */
+    .info-fullscreen {
+        pointer-events: auto;
+    }
+
+    .info-fullscreen-content {
+        pointer-events: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Новые стили для улучшения свайпа на информационном слайде */
+    .pswp--info-slide .pswp__scroll-wrap {
+        touch-action: pan-y;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .pswp--info-slide .info-fullscreen {
+        touch-action: pan-y;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .pswp--info-slide .info-fullscreen-content {
+        touch-action: pan-y;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Зоны для свайпа по бокам информационного слайда */
+    .swipe-area {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 30%;
+        z-index: 10;
+    }
+
+    .swipe-area-left {
+        left: 0;
+    }
+
+    .swipe-area-right {
+        right: 0;
+    }
+
+    @media (max-width: 1200px) {
+        .gallery {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+    }
+
+    @media (max-width: 900px) {
+        .gallery {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+        
+        .header .main-title {
+            font-size: 4.5rem;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+        }
+        
+        .title-divider {
+            max-width: 300px;
+        }
+        
+        .item-caption {
+            padding: 12px;
+        }
+        
+        .item-caption h3 {
+            font-size: 1rem;
+        }
+        
+        .item-caption p {
+            font-size: 0.7rem;
+        }
+        
+        .info-gallery-item {
+            padding: 15px;
+        }
+        
+        .info-gallery-item h3 {
+            font-size: 1.3rem;
+        }
+        
+        .info-gallery-item p {
+            font-size: 0.8rem;
+        }
+        
+        .info-fullscreen {
+            padding: 15px;
+        }
+        
+        .info-fullscreen-content {
+            padding: 20px;
+        }
+        
+        .info-fullscreen h2 {
+            font-size: 1.7rem;
+        }
+        
+        .info-fullscreen p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .gallery {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .header .main-title {
+            font-size: 3rem;
+        }
+        
+        .header .subtitle {
+            font-size: 1rem;
+        }
+        
+        .title-divider {
+            max-width: 200px;
+            height: 2px;
+        }
+        
+        .item-caption {
+            padding: 8px;
+        }
+        
+        .item-caption h3 {
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .item-caption p {
+            font-size: 0.65rem;
+            line-height: 1.1;
+        }
+        
+        .info-gallery-item {
+            padding: 12px;
+        }
+        
+        .info-gallery-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.7rem;
+        }
+        
+        .info-gallery-item p {
+            font-size: 0.75rem;
+        }
+        
+        .info-fullscreen {
+            padding: 10px;
+            justify-content: flex-start;
+            padding-top: 60px;
+            /* Убираем pointer-events: none для мобильных устройств */
+            pointer-events: auto;
+        }
+        
+        .info-fullscreen-content {
+            padding: 15px;
+            pointer-events: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .info-fullscreen h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .info-fullscreen p {
+            font-size: 0.8rem;
+            line-height: 1.4;
+            text-align: justify;
+            text-align-last: left;
+            margin-bottom: 0.8rem;
+        }
+
+        /* Улучшаем поддержку свайпа на мобильных */
+        .pswp__item {
+            touch-action: pan-y;
+        }
+        
+        .info-fullscreen-content {
+            max-height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Для информационного слайда на мобильных - разрешаем свайп */
+        .pswp--info-slide .pswp__item {
+            touch-action: pan-y;
+        }
+        
+        .pswp--info-slide .info-fullscreen {
+            pointer-events: auto; /* Включаем события для контейнера */
+        }
+        
+        .pswp--info-slide .info-fullscreen-content {
+            pointer-events: auto; /* Включаем события для контента */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Увеличиваем зоны для свайпа на мобильных */
+        .swipe-area {
+            width: 40%;
+        }
+    }
+
+    /* Индикатор загрузки */
+    .loader {
+        display: none;
+        width: 48px;
+        height: 48px;
+        margin: 40px auto;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-left-color: var(--primary-color);
+        border-radius: 50%;
+        animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Стили для кликабельных ссылок */
+    .gallery-item a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    /* Эффект тонкой рамки при наведении */
+    .gallery-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 3;
+    }
+
+    .gallery-item:hover::before {
+        opacity: 1;
+    }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="main-title">Digital Art</h1>
+        <div class="title-divider"></div>
+        <p class="subtitle">Зимние истории</p>
+    </header>
+
+    <main>
+        <div class="gallery" id="my-gallery">
+            <div class="loader" id="loader"></div>
+            <div class="loading" id="loading-text">Загрузка галереи...</div>
+            <!-- Изображения и информационный блок будут добавлены через JavaScript -->
+        </div>
+    </main>
+
+    <!-- Контейнер для информационного слайда -->
+    <div class="info-fullscreen" id="info-fullscreen">
+        <div class="swipe-area swipe-area-left"></div>
+        <div class="swipe-area swipe-area-right"></div>
+        <div class="info-fullscreen-content">
+            <h2>Цифровой портрет: искусство, а не фото</h2>
+            <p>Ваш портрет создается в технике цифровой живописи. Это уникальное произведение, где мы сознательно стилизуем черты лица и детали для художественной выразительности. Фокус на общей гармонии и настроении может означать отклонение от фотографической точности — это и есть ценность искусства.</p>
+            <p style="margin: 0;">Чтобы избежать недопонимания:</p>
+            <p style="margin: 0;">Фотографии на экране вашего телефона выглядят очень ярко из-за настроек дисплея. При печати в лаборатории цвета становятся более натуральными и естественными.</p>
+            <p>Помните: то, что вы видите на отпечатках — это и есть реальное, качественное фото. Ожидайте именно такой, спокойной и приятной глазу цветопередачи.</p>
+            <p>Спасибо, что были внимательны!</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© Корсун А.</p>
+        <p>Все права защищены</p>
+    </footer>
+
+    <!-- Подключаем PhotoSwipe -->
+    <script src="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe-lightbox.umd.min.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Показываем индикатор загрузки
+        const loader = document.getElementById('loader');
+        const loadingText = document.getElementById('loading-text');
+        const infoFullscreen = document.getElementById('info-fullscreen');
+        loader.style.display = 'block';
+        
+        // Данные о изображениях из папки images
+        const images = [
+            {
+                src: 'images/obrazec_1.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №1',
+                description: 'Bentley New Year'
+            },
+            {
+                src: 'images/obrazec_2.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №2',
+                description: 'Подснежники'
+            },
+            {
+                src: 'images/obrazec_3.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №3',
+                description: 'Европейские каникулы'
+            },
+            {
+                src: 'images/obrazec_4.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №4',
+                description: 'Венская зима'
+            },
+            {
+                src: 'images/obrazec_5.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №5',
+                description: 'Джентельмен'
+            },
+            {
+                src: 'images/obrazec_6.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №6',
+                description: 'Леди'
+            },
+            {
+                src: 'images/obrazec_7.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №7',
+                description: '24:01 Paris'
+            },
+            {
+                src: 'images/obrazec_8.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №8',
+                description: 'Зимний бал'
+            },
+            {
+                src: 'images/obrazec_9.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №9',
+                description: 'Буду счастлив'
+            },
+            {
+                src: 'images/obrazec_10.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №10',
+                description: 'Буду счастлива'
+            },
+            {
+                src: 'images/obrazec_11.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №11',
+                description: 'Салют на Дворцовой площади'
+            },
+            {
+                src: 'images/obrazec_12.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №12',
+                description: 'Пока все дома'
+            },
+            {
+                src: 'images/obrazec_13.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №13',
+                description: 'New Man'
+            },
+            {
+                src: 'images/obrazec_14.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №14',
+                description: 'Имбирное печенье'
+            },
+            {
+                src: 'images/obrazec_15.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №15',
+                description: 'В гостях у сказки'
+            },
+            {
+                src: 'images/obrazec_16.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №16',
+                description: 'Символ года'
+            },
+            {
+                src: 'images/obrazec_17.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №17',
+                description: 'Магазин подарков'
+            },
+            {
+                src: 'images/obrazec_18.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №18',
+                description: 'На позитивной ноте'
+            },
+            {
+                src: 'images/obrazec_19.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №19',
+                description: 'снегодруг Cyberpunk'
+            },
+            {
+                src: 'images/obrazec_20.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №20',
+                description: 'Желания исполняются'
+            },
+            {
+                src: 'images/obrazec_21.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №21',
+                description: 'Rolls-Royce'
+            },
+            {
+                src: 'images/obrazec_22.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №22',
+                description: 'Вечерний гость'
+            },
+            {
+                src: 'images/obrazec_23.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Сад чудес',
+                description: 'В ожидании чуда'
+            },
+            {
+                src: 'images/obrazec_24.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №24',
+                description: 'Волшебный сад'
+            },
+            {
+                src: 'images/obrazec_25.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №25',
+                description: '24:01 NY'
+            },
+            {
+                src: 'images/obrazec_26.jpg',
+                width: 688,
+                height: 1024,
+                title: 'Образец №26',
+                description: '24:01 NY'
+            }
+        ];
+
+        // Создаем элементы галереи после загрузки данных
+        setTimeout(function() {
+            const galleryElement = document.getElementById('my-gallery');
+            loadingText.style.display = 'none';
+            loader.style.display = 'none';
+            
+            // Добавляем изображения в галерею
+            images.forEach((image, index) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.innerHTML = `
+                    <a href="${image.src}" 
+                       data-pswp-width="${image.width}" 
+                       data-pswp-height="${image.height}" 
+                       data-caption="${image.title} - ${image.description}">
+                        <img src="${image.src}" alt="${image.title}" loading="lazy">
+                        <div class="item-caption">
+                            <h3>${image.title}</h3>
+                            <p>${image.description}</p>
+                        </div>
+                    </a>
+                `;
+                
+                galleryElement.appendChild(item);
+            });
+            
+            // Добавляем информационный блок как последний элемент галереи
+            const infoItem = document.createElement('div');
+            infoItem.className = 'gallery-item info-gallery-item';
+            infoItem.setAttribute('data-pswp-width', 1200);
+            infoItem.setAttribute('data-pswp-height', 800);
+            infoItem.setAttribute('data-caption', 'Информация о процессе создания');
+            infoItem.innerHTML = `
+                <h3>Info</h3>
+                <p></p>
+            `;
+            
+            galleryElement.appendChild(infoItem);
+
+            // Инициализация PhotoSwipe Lightbox
+            const lightbox = new PhotoSwipeLightbox({
+                gallery: '#my-gallery',
+                children: 'a, .info-gallery-item',
+                pswpModule: PhotoSwipe,
+                showHideAnimationType: 'fade',
+                arrowPrev: false, // Отключаем стрелки
+                arrowNext: false, // Отключаем стрелки
+                zoom: true,
+                close: true,
+                counter: true,
+                arrowKeys: true,
+                wheelToZoom: true
+            });
+            
+            // Обработка клика на информационный блок
+            lightbox.on('uiRegister', function() {
+                lightbox.pswp.on('change', function() {
+                    // Всегда скрываем информационный блок при смене слайда
+                    infoFullscreen.style.display = 'none';
+                    
+                    // Получаем общее количество слайдов
+                    const totalSlides = lightbox.pswp.getNumItems();
+                    
+                    // Если текущий слайд - информационный блок (последний слайд)
+                    if (lightbox.pswp.currSlide && lightbox.pswp.currSlide.index === totalSlides - 1) {
+                        // Показываем информационный блок
+                        infoFullscreen.style.display = 'flex';
+                        // Перемещаем блок в контейнер PhotoSwipe
+                        lightbox.pswp.currSlide.holderElement.appendChild(infoFullscreen);
+                        
+                        // Добавляем класс для информационного слайда
+                        lightbox.pswp.currSlide.holderElement.classList.add('pswp--info-slide');
+                        
+                        // Добавляем обработчики для зон свайпа
+                        const leftSwipeArea = document.querySelector('.swipe-area-left');
+                        const rightSwipeArea = document.querySelector('.swipe-area-right');
+                        
+                        if (leftSwipeArea && rightSwipeArea) {
+                            leftSwipeArea.addEventListener('click', function() {
+                                lightbox.pswp.prev();
+                            });
+                            
+                            rightSwipeArea.addEventListener('click', function() {
+                                lightbox.pswp.next();
+                            });
+                        }
+                    } else {
+                        // Убираем класс, если это не информационный слайд
+                        if (lightbox.pswp.currSlide && lightbox.pswp.currSlide.holderElement) {
+                            lightbox.pswp.currSlide.holderElement.classList.remove('pswp--info-slide');
+                        }
+                    }
+                });
+
+                // Убедимся, что класс удаляется при закрытии галереи
+                lightbox.pswp.on('close', function() {
+                    infoFullscreen.style.display = 'none';
+                    // Возвращаем блок обратно в body
+                    document.body.appendChild(infoFullscreen);
+                    
+                    // Убираем класс информационного слайда
+                    const slideElements = document.querySelectorAll('.pswp--info-slide');
+                    slideElements.forEach(el => {
+                        el.classList.remove('pswp--info-slide');
+                    });
+                });
+            });
+
+            lightbox.init();
+            
+            // Запрещаем контекстное меню на всей странице
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            
+        }, 1000); // Имитация загрузки данных
+    });
+    </script>
+</body>
+</html>
